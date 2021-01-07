@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  daemon:
+    image: mojo42/jirafeau:4.3.0
+    volumes:
+      - ${DROP_VOLUME_DATA:-./volumes/data}:/var/lib/jirafeau/data
+      - ./volumes/config.local.php:/www/lib/config.local.php
+    networks:
+      - web
+      - default
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=web
+        - traefik.port=80
+        - traefik.frontend.rule=Host:${DROP_CONF_URL:-homeserver.domain.com}
+        - traefik.frontend.port=80
+
+networks:
+  web:
+    external: true
